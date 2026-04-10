@@ -66,11 +66,15 @@ IPsec policy-based VPN between home and office UDM Pros. Different Ubiquiti acco
 - **VPN Remote Networks:** 192.168.0.0/24
 
 ### Current Status (2026-04-09)
+- **Tunnel is UP — bidirectional pings confirmed**
 - Both sides configured with matching pre-shared keys, policy-based IPsec
-- Both UIs show tunnel as "offline"
-- Home can ping office (192.168.1.x) — traffic flows one direction
-- Office cannot ping home (192.168.0.x) — likely firewall or routing issue on home side
-- Next step: troubleshoot from home machine using both `unifi-home` and `unifi-church` MCP servers
+- Both sides running zone-based firewall with auto-generated IPsec allow rules
+- Next step: switch VPN remote gateways from direct IPs to DDNS hostnames
+
+### Troubleshooting History (2026-04-09)
+Two issues blocked the tunnel:
+1. **IDS/IPS on home UDM Pro** — was flagging/blocking IPsec traffic. Disabled to resolve.
+2. **Home UDM Pro was on legacy firewall** — zone-based firewall was not enabled, so the IPsec allow rules (Allow IPsec, Allow ESP, Allow Policy-Based IPsec VPN) were never generated. Migrated to zone-based firewall, which auto-created the needed rules.
 
 ## Notes
 
