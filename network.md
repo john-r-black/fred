@@ -47,6 +47,31 @@ Comcast gateway in bridge mode passes public IP directly to the UDM Pro. The UDM
 - **Gateway:** 192.168.20.1
 - **DHCP range:** 192.168.20.6 - 192.168.20.254
 
+## Site-to-Site VPN (In Progress)
+
+IPsec policy-based VPN between home and office UDM Pros. Different Ubiquiti accounts so Magic VPN is not an option.
+
+### Home UDMPRO
+- **WAN:** 99.122.140.237
+- **LAN:** 192.168.0.0/24
+- **DDNS:** dpumc.duckdns.org
+- **VPN Remote Gateway:** 76.143.85.189 (using IP while debugging, switch to dpumc1.duckdns.org once working)
+- **VPN Remote Networks:** 192.168.1.0/24
+
+### Office UDMPRO
+- **WAN:** 76.143.85.189
+- **LAN:** 192.168.1.0/24
+- **DDNS:** dpumc1.duckdns.org
+- **VPN Remote Gateway:** 99.122.140.237 (using IP while debugging, switch to dpumc.duckdns.org once working)
+- **VPN Remote Networks:** 192.168.0.0/24
+
+### Current Status (2026-04-09)
+- Both sides configured with matching pre-shared keys, policy-based IPsec
+- Both UIs show tunnel as "offline"
+- Home can ping office (192.168.1.x) — traffic flows one direction
+- Office cannot ping home (192.168.0.x) — likely firewall or routing issue on home side
+- Next step: troubleshoot from home machine using both `unifi-home` and `unifi-church` MCP servers
+
 ## Notes
 
 - **Comcast admin UI** is no longer accessible in bridge mode. Factory reset required to revert.
