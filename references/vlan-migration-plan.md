@@ -31,7 +31,7 @@ Access readers connect to Access hubs via the hub's built-in ports, not to netwo
 
 | Port | Device | App | Profile | Notes |
 |------|--------|-----|---------|-------|
-| 1 | Front Desk - Max FB92 + Associate Pastor Desktop | Talk + Network | **Data + Voice** | Phone passthrough to desktop |
+| 1 | Front Desk - Max FB92 + Front Desk Computer | Talk + Network | **Data + Voice** | Phone passthrough to desktop |
 | 2 | 102 - Touch 32D6 | Talk | **Talk** | |
 | 3 | Family - Touch 3204 | Talk | **Talk** | |
 | 4 | Finance - Touch 3312 + Finance Computer | Talk + Network | **Data + Voice** | Phone passthrough to desktop |
@@ -169,7 +169,7 @@ These wired clients remain on VLAN 1 — no changes needed:
 
 | Device | Switch | Port | IP |
 |--------|--------|------|----|
-| Associate Pastor Desktop | Admin Pro-48 | 1 (via phone) | 192.168.1.57 |
+| Front Desk Computer | Admin Pro-48 | 1 (via phone) | 192.168.1.57 |
 | Finance Computer | Admin Pro-48 | 4 (via phone) | 192.168.1.241 |
 | Sharp 4141N (printer) | Admin Pro-48 | 29 | 192.168.1.21 |
 | Thermostat Control Computer | Admin Pro-48 | 33 | 192.168.1.31 |
