@@ -164,11 +164,12 @@ DPUMC-Gateway (UDM Pro) — 192.168.1.1  (UniFi OS 5.0.16)
 
 | Device | IP | MAC |
 |---|---|---|
-| DESKTOP-VSPIT20 | 10.1.10.101 | 04:42:1A:8D:30:F6 |
-| birddog-03f83 | 10.1.10.102 | D4:20:00:A0:3F:83 |
+| Broadcast PC | 10.1.10.101 | 04:42:1A:8D:30:F6 |
+| Concourse BirdDog | 10.1.10.102 | D4:20:00:A0:3F:83 |
 | TL-SG108E | 10.1.10.121 | E8:48:B8:71:2B:ED |
-| Announcements | 10.1.10.238 | 5C:1B:F4:9F:32:6B |
-| (previously offline) | 10.1.10.205 | F0:2F:74:CF:28:D9 |
+| Worship PC | 10.1.10.205 | F0:2F:74:CF:28:D9 |
+| Announcements Mac | 10.1.10.238 | 5C:1B:F4:9F:32:6B |
+| (unidentified) | 10.1.10.240 | E4:77:D4:08:B9:E2 |
 
 ---
 
