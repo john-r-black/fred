@@ -1,6 +1,6 @@
 # Raspberry Pi MCP Server — Infrastructure Reference
 
-**Last updated:** April 11, 2026
+**Last updated:** April 11, 2026 (sd26 deployed)
 
 -----
 
@@ -77,12 +77,18 @@ tunnel: 126b203e-fcf3-43cd-90b4-98df790ad2f6
 credentials-file: /home/1421MCP/.cloudflared/126b203e-fcf3-43cd-90b4-98df790ad2f6.json
 
 ingress:
+  - hostname: sudoku.1421mcps.com
+    service: http://localhost:8090
   - hostname: mcp.1421mcps.com
     service: http://localhost:8080
   - service: http_status:404
 ```
 
-`localhost:8080` is a placeholder — no service is running there yet. Any HTTP service bound to port 8080 on the Pi will be immediately accessible at `https://mcp.1421mcps.com`.
+**Port usage on the Pi:**
+- `8090` — **sd26** (Sudoku app, live, public, no auth). See `~/code_projects/sd26/references/2026-04-11_sd26_info.md`.
+- `8080` — reserved placeholder for a future MCP server at `mcp.1421mcps.com`. Nothing is running there yet.
+
+A backup of the pre-sd26 tunnel config is at `~/.cloudflared/config.yml.bak` on the Pi.
 
 ### Adding More Services
 
