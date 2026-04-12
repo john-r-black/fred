@@ -1,20 +1,13 @@
 # Device Rename Report - 2026-04-12
 
-Target naming convention: name ends with the last 4 hex chars of the MAC (e.g. `A07D`), no colons, no brackets.
+Target: name ends with the last 4 hex chars of the MAC (e.g. `A07D`), no colons, no brackets.
 
-Items below could not be renamed via MCP. The UniFi Network MCP only exposes list/block/unblock/reconnect actions for clients, and list/restart/locate/upgrade/power_cycle for devices - no rename action is available. These need to be renamed manually in the UniFi Network controller UI.
-
-Full list of all clients and devices from each Network MCP is included (not just those needing change); rows where Current Name equals New Name are already compliant.
+Items below need manual rename in the UniFi Network controller UI - the Network MCP exposes no rename action (only list/block/unblock/reconnect for clients and list/restart/locate/upgrade/power_cycle for devices). Only non-compliant items are shown.
 
 ## unifi-church - Network (clients + devices)
 
 | IP Address | Current Name | New Name | MAC |
 |---|---|---|---|
-| 10.1.10.101 | Broadcast PC 30F6 | Broadcast PC 30F6 | 04:42:1a:8d:30:f6 |
-| 10.1.10.102 | Concourse BirdDog 3F83 | Concourse BirdDog 3F83 | d4:20:00:a0:3f:83 |
-| 10.1.10.121 | TL-SG108E 2BED | TL-SG108E 2BED | e8:48:b8:71:2b:ed |
-| 10.1.10.205 | Worship PC 28D9 | Worship PC 28D9 | f0:2f:74:cf:28:d9 |
-| 10.1.10.238 | Announcements Mac 326B | Announcements Mac 326B | 5c:1b:f4:9f:32:6b |
 | 10.1.10.240 | e4:77:d4:08:b9:e2 | B9E2 | e4:77:d4:08:b9:e2 |
 | 76.143.85.189 | DPUMC-Gateway | DPUMC-Gateway 3159 | 24:5a:4c:99:31:59 |
 | 192.168.1.2 | 6022326b187b06a6b0a606f6d04106306a488.id.ui.direct | 6022326b187b06a6b0a606f6d04106306a488.id.ui.direct 187C | 60:22:32:6b:18:7c |
@@ -42,68 +35,53 @@ Full list of all clients and devices from each Network MCP is included (not just
 | 192.168.1.27 | MWS Power Strip | MWS Power Strip 381E | d0:21:f9:63:38:1e |
 | 192.168.1.28 | East Power Strip | East Power Strip 4DDD | d0:21:f9:88:4d:dd |
 | 192.168.1.29 | Admin Power Strip | Admin Power Strip E64E | d0:21:f9:55:e6:4e |
-| 192.168.1.30 | FLC2H2 - G3 Flex F861 | FLC2H2 - G3 Flex F861 | d0:21:f9:90:f8:61 |
 | 192.168.1.31 | Thermostat Computer | Thermostat Computer E279 | 1c:69:7a:6a:e2:79 |
 | 192.168.1.32 | Amazon Echo Pop d0:fd | Amazon Echo Pop D0FD | 08:c2:24:72:d0:fd |
 | 192.168.1.33 | echoshow-8e63f44b2984ee8e 60:82 | echoshow-8e63f44b2984ee8e 6082 | 08:c2:24:af:60:82 |
 | 192.168.1.35 | 124-G3-Flex | 124-G3-Flex 607A | d0:21:f9:91:60:7a |
 | 192.168.1.38 | MWS Interior | MWS Interior 6C47 | 24:5a:4c:a9:6c:47 |
 | 192.168.1.40 | Pastor2023 be:6c | Pastor2023 BE6C | 58:11:22:75:be:6c |
-| 192.168.1.41 | FLC202 - G3 Flex F9DA | FLC202 - G3 Flex F9DA | d0:21:f9:90:f9:da |
 | 192.168.1.42 | NPIF845FA 0d:5a | NPIF845FA 0D5A | 64:6c:80:66:0d:5a |
-| 192.168.1.43 | Front Desk - Max FB92 | Front Desk - Max FB92 | 68:d7:9a:7f:fb:92 |
 | 192.168.1.47 | flc205a-g3-flex ca:be | flc205a-g3-flex CABE | 58:a8:e8:1f:ca:be |
 | 192.168.1.50 | Synology 1 | Synology 1 022F | 00:11:32:9b:02:2f |
 | 192.168.1.51 | Synology 2 | Synology 2 0230 | 00:11:32:9b:02:30 |
-| 192.168.1.54 | Pastor - Max 7C33 | Pastor - Max 7C33 | 60:22:32:0d:7c:33 |
-| 192.168.1.55 | FLC203 - G3 Flex F87B | FLC203 - G3 Flex F87B | d0:21:f9:90:f8:7b |
 | 192.168.1.56 | Concourse - Exit | Concourse - Exit FD02 | 24:5a:4c:f4:fd:02 |
 | 192.168.1.57 | Front Desk Computer | Front Desk Computer E2AD | 8c:8c:aa:7e:e2:ad |
 | 192.168.1.58 | FP Interior | FP Interior 0B5E | f4:e2:c6:d7:0b:5e |
 | 192.168.1.59 | FP Interior - Exit | FP Interior - Exit EB2E | e4:38:83:ba:eb:2e |
-| 192.168.1.60 | MWS - ATA 347F | MWS - ATA 347F | 70:a7:41:ff:34:7f |
 | 192.168.1.61 | iPhone 77:30 | iPhone 7730 | d2:7a:77:ca:77:30 |
 | 192.168.1.63 | FP Exterior - Entry | FP Exterior - Entry ECD7 | 9c:05:d6:34:ec:d7 |
 | 192.168.1.65 | Protect Viewport | Protect Viewport 3BB6 | d8:b3:70:8c:3b:b6 |
 | 192.168.1.76 | iPhone f2:1e | iPhone F21E | 1a:41:6d:f4:f2:1e |
 | 192.168.1.78 | MWS Front - Exit  | MWS Front - Exit 53CE | 24:5a:4c:f2:53:ce |
 | 192.168.1.81 | amazon-35f272b6d1081e1c 99:26 | amazon-35f272b6d1081e1c 9926 | 0c:dc:91:cb:99:26 |
-| 192.168.1.89 | Finance - Touch 3312 | Finance - Touch 3312 | 68:d7:9a:7f:33:12 |
-| 192.168.1.90 | FLC205A - G3 Flex 008B | FLC205A - G3 Flex 008B | d0:21:f9:91:00:8b |
 | 192.168.1.92 | East Concourse | East Concourse 6094 | d0:21:f9:91:60:94 |
 | 192.168.1.93 | West Concourse | West Concourse 49FC | d0:21:f9:90:49:fc |
 | 192.168.1.94 | Pura-C074 c0:74 | Pura-C074 C074 | b0:a7:32:c7:c0:74 |
-| 192.168.1.97 | Touch 1617 | Touch 1617 | 68:d7:9a:7f:16:17 |
 | 192.168.1.101 | MWS Interior - Entry | MWS Interior - Entry FD32 | 24:5a:4c:f4:fd:32 |
 | 192.168.1.102 | 85onnRokuTV 21:18 | 85onnRokuTV 2118 | d4:3a:2f:ec:21:18 |
 | 192.168.1.104 | East Door - Exit | East Door - Exit B613 | 24:5a:4c:f0:b6:13 |
-| 192.168.1.105 | FLC1H1 - G3 Flex FA94 | FLC1H1 - G3 Flex FA94 | d0:21:f9:90:fa:94 |
 | 192.168.1.106 | flc205b-g3-flex 4c:4b | flc205b-g3-flex 4C4B | 20:be:b8:99:4c:4b |
 | 192.168.1.107 | MWS Desktop | MWS Desktop AC22 | 94:c6:91:1c:ac:22 |
 | 192.168.1.108 | FLC Back | FLC Back 685C | 24:5a:4c:a9:68:5c |
 | 192.168.1.109 | East Door | East Door 2D7E | 78:45:58:e5:2d:7e |
 | 192.168.1.111 | Nursery-G3 Flex | Nursery-G3 Flex A039 | d0:21:f9:90:a0:39 |
-| 192.168.1.112 | FLC205B - G3 Flex 009A | FLC205B - G3 Flex 009A | d0:21:f9:91:00:9a |
 | 192.168.1.115 | Front Interior - Exit | Front Interior - Exit F9DE | 24:5a:4c:f4:f9:de |
 | 192.168.1.116 | MWS Front | MWS Front BC7C | d0:21:f9:50:bc:7c |
 | 192.168.1.117 | MWS Back - Exit | MWS Back - Exit FB26 | 24:5a:4c:f4:fb:26 |
 | 192.168.1.118 | East Door | East Door A040 | d0:21:f9:90:a0:40 |
 | 192.168.1.119 | FLC Back - Exit | FLC Back - Exit FA9B | 24:5a:4c:f4:fa:9b |
 | 192.168.1.120 | MWS-E | MWS-E 5D5E | d0:21:f9:91:5d:5e |
-| 192.168.1.121 | FLC2H3 - G3 Flex F8BA | FLC2H3 - G3 Flex F8BA | d0:21:f9:90:f8:ba |
 | 192.168.1.125 | West Door | West Door 67D1 | d0:21:f9:91:67:d1 |
 | 192.168.1.130 | MWS Office Echo  | MWS Office Echo 9B8E | 74:a7:ea:3c:9b:8e |
 | 192.168.1.132 | MWS-W | MWS-W 599F | d0:21:f9:91:59:9f |
 | 192.168.1.136 | Front Interior | Front Interior 001E | f4:e2:c6:d7:00:1e |
 | 192.168.1.139 | Admin 1 | Admin 1 A07D | d0:21:f9:90:a0:7d |
-| 192.168.1.140 | CrossOver - Max FDDB | CrossOver - Max FDDB | 68:d7:9a:7f:fd:db |
-| 192.168.1.142 | FLC1H2 - G3 Flex FF14 | FLC1H2 - G3 Flex FF14 | d0:21:f9:90:ff:14 |
 | 192.168.1.145 | FP Interior - Entry | FP Interior - Entry FD5E | 24:5a:4c:f4:fd:5e |
 | 192.168.1.147 | FLC Closets | FLC Closets 4867 | 0c:ea:14:fd:48:67 |
 | 192.168.1.148 | Pura-B7A0 b7:a0 | Pura-B7A0 B7A0 | b0:a7:32:c7:b7:a0 |
 | 192.168.1.151 | East FP | East FP 5EE2 | d0:21:f9:91:5e:e2 |
 | 192.168.1.153 | G3-Flex | G3-Flex A08B | d0:21:f9:90:a0:8b |
-| 192.168.1.154 | FLC202 - Flex 3271 | FLC202 - Flex 3271 | 74:83:c2:bf:32:71 |
 | 192.168.1.155 | MWS Printer | MWS Printer 2701 | f8:0d:ac:bc:27:01 |
 | 192.168.1.158 | Front Interior - Entry | Front Interior - Entry 9006 | e4:38:83:b6:90:06 |
 | 192.168.1.159 | iPhone 99:d1 | iPhone 99D1 | 94:bd:be:67:99:d1 |
@@ -112,42 +90,28 @@ Full list of all clients and devices from each Network MCP is included (not just
 | 192.168.1.163 | MWS Back - Entry | MWS Back - Entry FCDD | 24:5a:4c:f4:fc:dd |
 | 192.168.1.166 | West Kitchen | West Kitchen 615A | d0:21:f9:91:61:5a |
 | 192.168.1.167 | FLC Gym - Entry | FLC Gym - Entry D198 | 84:78:48:b8:d1:98 |
-| 192.168.1.168 | FLC204 - Flex 323F | FLC204 - Flex 323F | 74:83:c2:bf:32:3f |
-| 192.168.1.169 | 102 - Touch 32D6 | 102 - Touch 32D6 | 68:d7:9a:7f:32:d6 |
 | 192.168.1.170 | flc2h1-g3-flex 22:28 | flc2h1-g3-flex 2228 | 58:a8:e8:1b:22:28 |
-| 192.168.1.171 | FLC203 - Flex 3242 | FLC203 - Flex 3242 | 74:83:c2:bf:32:42 |
 | 192.168.1.172 | Front Exterior | Front Exterior CFD9 | 24:5a:4c:7f:cf:d9 |
 | 192.168.1.174 | MWS 134 | MWS 134 318A | fc:49:2d:8b:31:8a |
-| 192.168.1.175 | Family - Touch 3204 | Family - Touch 3204 | 68:d7:9a:7f:32:04 |
 | 192.168.1.177 | FLC Back - Entry | FLC Back - Entry E2C9 | 9c:05:d6:34:e2:c9 |
-| 192.168.1.179 | FLC204 - G3 Flex FF3E | FLC204 - G3 Flex FF3E | d0:21:f9:90:ff:3e |
 | 192.168.1.183 | MWS Front - Entry  | MWS Front - Entry F990 | 78:45:58:f6:f9:90 |
-| 192.168.1.185 | FLC201 - G3 Flex 8B31 | FLC201 - G3 Flex 8B31 | d0:21:f9:90:8b:31 |
 | 192.168.1.186 | MWS Office Echo | MWS Office Echo C5E5 | 00:71:47:9e:c5:e5 |
 | 192.168.1.187 | EPSONEAB153 b1:53 | EPSONEAB153 B153 | 38:1a:52:ea:b1:53 |
 | 192.168.1.188 | MWS-N | MWS-N 59D5 | d0:21:f9:91:59:d5 |
 | 192.168.1.195 | Foyer | Foyer A0B5 | d0:21:f9:90:a0:b5 |
 | 192.168.1.197 | MWS 131 | MWS 131 4B7A | 4c:17:44:2a:4b:7a |
-| 192.168.1.201 | FLC205 - Flex B389 | FLC205 - Flex B389 | 74:83:c2:bf:b3:89 |
 | 192.168.1.204 | Front Exterior - Entry | Front Exterior - Entry FCA6 | 24:5a:4c:9f:fc:a6 |
 | 192.168.1.205 | Admin 2 | Admin 2 66E3 | d0:21:f9:91:66:e3 |
 | 192.168.1.206 | FP Exterior - Exit | FP Exterior - Exit 940B | e4:38:83:b6:94:0b |
-| 192.168.1.208 | FLC2H1 - G3 Flex FECE | FLC2H1 - G3 Flex FECE | d0:21:f9:90:fe:ce |
-| 192.168.1.214 | Nursery - Flex 61C2 | Nursery - Flex 61C2 | 74:83:c2:bf:61:c2 |
 | 192.168.1.218 | FP Exterior | FP Exterior 0CC9 | f4:e2:c6:d7:0c:c9 |
-| 192.168.1.219 | FLC201 - Flex 32B0 | FLC201 - Flex 32B0 | 74:83:c2:bf:32:b0 |
 | 192.168.1.220 | Front Exterior - Exit | Front Exterior - Exit 2C36 | f4:92:bf:34:2c:36 |
 | 192.168.1.221 | East Door - Entry | East Door - Entry FC5F | f4:92:bf:7e:fc:5f |
 | 192.168.1.222 | MWS Laptop | MWS Laptop 7659 | a4:6b:b6:f8:76:59 |
 | 192.168.1.224 | MWS Interior - Exit | MWS Interior - Exit 99A6 | e4:38:83:b6:99:a6 |
 | 192.168.1.225 | MWS 133 | MWS 133 D066 | dc:54:d7:64:d0:66 |
-| 192.168.1.226 | Touch 3420 | Touch 3420 | 68:d7:9a:7f:34:20 |
-| 192.168.1.227 | Touch 339C | Touch 339C | 68:d7:9a:7f:33:9c |
 | 192.168.1.231 | Concourse | Concourse 68D3 | 24:5a:4c:a9:68:d3 |
-| 192.168.1.232 | FLC1H3 - G3 Flex 002E | FLC1H3 - G3 Flex 002E | d0:21:f9:91:00:2e |
 | 192.168.1.233 | MWS 135 | MWS 135 2FB8 | dc:54:d7:e9:2f:b8 |
 | 192.168.1.241 | Finance Computer | Finance Computer 7588 | 6c:4b:90:ad:75:88 |
-| 192.168.1.242 | Food Pantry - Touch 342C | Food Pantry - Touch 342C | 68:d7:9a:7f:34:2c |
 | 192.168.1.244 | Concourse - Entry | Concourse - Entry E667 | 9c:05:d6:34:e6:67 |
 | 192.168.1.249 | wlan0 46:d3 | wlan0 46D3 | 7c:f6:66:fc:46:d3 |
 | 192.168.1.251 | MWS 136 | MWS 136 03FD | dc:54:d7:cb:03:fd |
@@ -273,4 +237,4 @@ Full list of all clients and devices from each Network MCP is included (not just
 
 ## unifi-church-nvr - Protect (cameras + viewers)
 
-All 25 Protect cameras and 2 viewports were renamed successfully via the Protect MCP `update` action. No manual action needed.
+All 25 Protect cameras and 2 viewports were renamed via MCP. No manual action needed.
