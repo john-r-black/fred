@@ -1,5 +1,8 @@
 .claude/
 .mcp.json
 
-# Symlinks in references/ (created by git-sync)
-references/*/
+# Symlinks in references/ (created by git-sync) — ignore everything
+# in references/ except tracked markdown docs and .gitkeep.
+references/*
+!references/*.md
+!references/.gitkeep
