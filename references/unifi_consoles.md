@@ -4,11 +4,13 @@ Non-secret reference for the three UniFi consoles John manages. The root passwor
 
 ## Consoles
 
-| Console | LAN IP | Role | Hostname |
-|---|---|---|---|
-| Church Gateway | `192.168.1.1` | UDM Pro; Network + Access + Protect + Talk controllers | `DPUMC-Gateway` |
-| Church NVR | `192.168.1.2` | UNVR Pro; Protect recording (standalone from gateway) | `DPUMC-NVR-187C` |
-| Home Gateway | `192.168.0.1` | UDM Pro; Network controller | `HomeGateway-DreamMachinePro-65A` |
+| Console | LAN IP | Role | OS hostname | Network device name |
+|---|---|---|---|---|
+| Church Gateway | `192.168.1.1` | UDM Pro; Network + Access + Protect + Talk controllers | `DPUMC-Gateway` | `DPUMC-Gateway 3159` |
+| Church NVR | `192.168.1.2` | UNVR Pro; Protect recording (standalone from gateway) | `DPUMC-NVR-187C` | `DPUMC-NVR 187C` |
+| Home Gateway | `192.168.0.1` | UDM Pro; Network controller | `HomeGateway-DreamMachinePro-65A` | `Dream Machine Pro 65AB` |
+
+> **OS hostname vs Network device name:** the OS hostname (what `hostnamectl` reports) is set on the device itself and is what DHCP clients broadcast. The Network device name is a separate label stored in the Network controller's mongo DB — that's what shows up in the UniFi Network UI. This repo's renaming convention (`ends with the last 4 of the MAC`) applies to the **Network device name**; OS hostnames are left alone.
 
 Reachability: the church and home networks have a site-to-site VPN, so both `192.168.1.0/24` and `192.168.0.0/24` are routable from either machine when the VPN is up.
 

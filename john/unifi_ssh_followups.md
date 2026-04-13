@@ -7,9 +7,9 @@ Follow-ups from the 2026-04-12 session where Claude set up key-based SSH access 
 Do this right after the Windows setup session ends. Key auth only works while SSH is enabled, but leaving it on 24/7 is unnecessary exposure.
 
 For each console:
-- **Church Gateway** — https://192.168.1.1 → UniFi OS → Console Settings → SSH → **off**
-- **Church NVR** — https://192.168.1.2 → UniFi OS → Console Settings → SSH → **off**
-- **Home Gateway** — https://192.168.0.1 → UniFi OS → Console Settings → SSH → **off**
+- **DPUMC-Gateway 3159** — https://192.168.1.1 → UniFi OS → Console Settings → SSH → **off**
+- **DPUMC-NVR 187C** — https://192.168.1.2 → UniFi OS → Console Settings → SSH → **off**
+- **Dream Machine Pro 65AB** (home) — https://192.168.0.1 → UniFi OS → Console Settings → SSH → **off**
 
 Re-enable when you need Claude (or yourself) to do console work, then turn it off again when done.
 
