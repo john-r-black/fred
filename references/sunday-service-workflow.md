@@ -22,9 +22,10 @@ End-to-end process for setting up a Sunday worship service across PCO Services, 
 | **Scripture reference** | yes | e.g. `Luke 24:13-35`. Goes on the Sermon plan item as its description. |
 | **2-3 sentence synopsis** | yes | Raw material for the YouTube/Publishing description. Rewrite into a blurb — never paste the synopsis verbatim. |
 | **Preacher** | if not John | Default is John Black (`92412499`). Otherwise John will name the person; look them up via `list_speakers`. |
-| **Communion?** | if yes | Yes/no. On communion Sundays, `update_item` the "Invitation to Discipleship" item (find by title) to set `title` to `"Celebration of Holy Communion"`. |
 | **Series artwork** | yes | Absolute file path to a 16x9 image on John's disk (typically under `D:\OneDrive - DPUMC - John\...`). One file feeds Services series art, Publishing series art, and the YouTube thumbnail. |
-| **Message-specific hashtags** | optional | Extra tags beyond the always-included `dpumc christianity methodist umc <series_slug> <scripture_slug>`. |
+
+**Communion is not an input.** First Sunday of each month = communion, every other Sunday = no communion. More importantly, the plans are already correctly templated when batch-created at the start of the year — communion Sundays already have the "Celebration of Holy Communion" item in place, non-communion Sundays have "Invitation to Discipleship". Don't rename or edit these items; the templates are authoritative.
+| **Message-specific hashtags** | optional | Extra tags beyond the always-included `dpumc <series_slug> <scripture_slug>`. |
 
 **Before running the workflow**: verify every required field is present. If anything is missing, ask John. Don't run partial and try to patch later — back out and ask.
 
@@ -97,7 +98,7 @@ Steps 1 and 2 are independent — run in parallel where possible. Step 3 depends
 | Publishing channel ID (Sunday Worship) | `8116` |
 | Publishing `assigning` valid values | `["title", "series"]` |
 | Services service type ID (Sunday Worship) | `1028241` |
-| Standard hashtags (always included) | `dpumc christianity methodist umc` |
+| Standard hashtags (always included) | `dpumc <series_slug> <scripture_slug>` |
 | John Black speaker ID | `92412499` |
 | Joel Coulter speaker ID | `75157708` |
 | Publishing "publish to library" time | Sunday **11:00 AM Central** (`T16:00:00Z` CDT / `T17:00:00Z` CST) |
@@ -130,7 +131,6 @@ For the `<series_slug>` and `<scripture_slug>` placeholders in hashtags:
    2. `upload_series_artwork` with `series_id` + `file_path` (the absolute path John provided). The MCP uploads to PCO's file service and attaches it.
 
    Both sub-steps must complete **before** Step 3.1 runs. If the Services series has no art when `create_episode_from_services` imports it, the Publishing series will inherit a placeholder — hard to fix after the fact.
-6. **Communion (if yes)**: find the item with `title == "Invitation to Discipleship"` and `update_item` with `{"attributes": {"title": "Celebration of Holy Communion"}}`.
 
 ## Step 2 — YouTube broadcast
 
@@ -144,7 +144,7 @@ Write the description blurb first (see § Description Template below). You'll re
 
    Save the returned `id` as `video_id`.
 2. **Bind to the DPUMC stream**. `bind_broadcast` with `broadcastId: video_id`, `streamId: "fo6OsNXk9Io8b6B_YNVPBg1650172008984074"`.
-3. **Set category + tags**. `update_video` with `videoId: video_id`, `categoryId: "29"`, `tags: ["dpumc", "christianity", "methodist", "umc", "<series_slug>", "<scripture_slug>", ...message tags]`.
+3. **Set category + tags**. `update_video` with `videoId: video_id`, `categoryId: "29"`, `tags: ["dpumc", "<series_slug>", "<scripture_slug>", ...message tags]`.
 4. **Set thumbnail**. `set_thumbnail` with `videoId: video_id`, `filePath: <artwork file path>`.
 5. **Add to playlist**. `add_to_playlist` with `playlistId: "PLg0k5q7bY9EFqmZezemOhcNehUHtc_NIl"`, `videoId: video_id`. Do NOT pass `position` — playlist is auto-sorted.
 
@@ -239,7 +239,7 @@ inviting, not templated or formulaic>
 <preacher name>
 dpumc.org
 
-#dpumc #christianity #methodist #umc #<series_slug> #<scripture_slug> [+ message tags]
+#dpumc #<series_slug> #<scripture_slug> [+ message tags]
 
 Don't forget to check-in (https://dpumc.churchcenter.com/check-ins)
 Share your prayer requests (https://dpumc.churchcenter.com/people/forms/270725)
