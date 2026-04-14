@@ -119,21 +119,27 @@ Dream Machine Pro (UDM Pro) — 99.122.140.237 / 192.168.0.1
 
 ## Site-to-site IPsec VPN (to church UDM Pro)
 
-Policy-based IPsec, status **UP** as of 2026-04-09. See the church doc for tunnel troubleshooting history — both issues were on this (home) side.
+Policy-based IPsec, status **UP** as of 2026-04-09. Subnet selectors expanded 2026-04-14 to cover the church AV VLAN. See the church doc for tunnel troubleshooting history — both original issues were on this (home) side.
 
 | Field | Home (this site) | Office |
 |---|---|---|
 | WAN | `99.122.140.237` | `76.143.85.189` |
-| LAN advertised | `192.168.0.0/24`, `192.168.2.0/24`, `192.168.3.0/24` | `192.168.1.0/24` |
+| LAN advertised (auto from Internal zone) | `192.168.0.0/24`, `192.168.2.0/24`, `192.168.3.0/24` | `192.168.1.0/24`, `10.1.10.0/24` |
+| Remote subnets configured in tunnel | `192.168.1.0/24`, `10.1.10.0/24` | `192.168.0.0/24`, `192.168.3.0/24` |
 | DDNS | `dpumc.duckdns.org` | `dpumc1.duckdns.org` |
 | Remote gateway | `76.143.85.189` (direct IP, debug) | `99.122.140.237` (direct IP, debug) |
 | Tunnel name | `home-office` | `office-home` |
+
+**Reachability verified 2026-04-14:** from `1421home` (192.168.0.213) to church VLAN 1 and VLAN 2 hosts (UDM Pro, NVR, Pastor2023, Worship PC) via ICMP and RustDesk Direct IP. See `references/remote-access.md`.
+
+**Note on the Black VLAN (192.168.2.0/24) quarantine:** although `192.168.2.0/24` is technically advertised as a local subnet via Internal zone membership, the source-IP block rules prevent it from initiating outbound traffic toward any other zone (including `Vpn`). In practice, quarantined devices cannot reach the church LAN and should not be expected to — that's the entire point of the quarantine. Do not try to "fix" this by carving exceptions in the block rules.
 
 **Pending cleanup:** replace both hard-coded remote-gateway IPs with the DDNS hostnames.
 
 **Critical config notes — do not regress:**
 - **IDS/IPS must stay off** (or be carefully scoped) on this UDM Pro. Turning IDS/IPS on previously killed the tunnel by flagging IPsec traffic.
 - **Zone-based firewall must stay enabled.** The legacy firewall does not auto-generate the `Allow IPsec` / `Allow ESP` / `Allow Policy-Based IPsec VPN` rules. Migrating back to legacy will break the tunnel.
+- **Don't bridge the Black VLAN.** See note above.
 
 ---
 

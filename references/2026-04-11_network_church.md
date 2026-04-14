@@ -187,15 +187,23 @@ Migration requires reassigning per-port switch profiles in the UniFi UI because 
 
 ## Site-to-site IPsec VPN (to home UDM Pro)
 
-Policy-based IPsec, status **UP** and bidirectionally pinging as of 2026-04-09.
+Policy-based IPsec, status **UP** and bidirectionally pinging as of 2026-04-09. Subnet selectors expanded 2026-04-14.
 
 | Field | Office (this site) | Home |
 |---|---|---|
 | WAN | `76.143.85.189` | `99.122.140.237` |
-| LAN advertised | `192.168.1.0/24` | `192.168.0.0/24`, `192.168.2.0/24`, `192.168.3.0/24` |
+| LAN advertised | `192.168.1.0/24`, `10.1.10.0/24` (VLAN 2 auto-included, see below) | `192.168.0.0/24`, `192.168.3.0/24` (VLAN 3 auto-included) |
+| Remote subnets configured in tunnel | `192.168.0.0/24`, `192.168.3.0/24` | `192.168.1.0/24`, `10.1.10.0/24` |
 | DDNS | `dpumc1.duckdns.org` | `dpumc.duckdns.org` |
 | Remote gateway | `99.122.140.237` (direct IP, debug) | `76.143.85.189` (direct IP, debug) |
 | Tunnel name | `office-home` | `home-office` |
+
+**Verified reachable across the tunnel (from `1421home` 192.168.0.213, 2026-04-14):**
+- `192.168.1.1`, `192.168.1.2` (UDM + NVR) — ICMP and HTTPS
+- `192.168.1.40` (Pastor2023) — ICMP + RustDesk Direct IP 21118 (required fixing Pastor2023's NetworkCategory from Public → Private and adding a non-LocalSubnet-scoped ICMP allow rule)
+- `10.1.10.205` (Worship PC) — ICMP + RustDesk Direct IP 21118
+
+**UniFi gotcha — local subnet auto-inclusion:** on a Policy-Based IPsec tunnel in UniFi Network 9.x/UniFi OS 5.x, the tunnel edit panel does **not** expose a "Local Networks" field. The local-side SA selectors are auto-derived from every network in the same firewall zone as the tunnel's configured LAN. Since VLAN 1 and VLAN 2 both live in the `Internal` zone, `10.1.10.0/24` is automatically included as a local subnet with no UI action. Confirmed empirically 2026-04-14 after adding `10.1.10.0/24` to home's remote-subnets list — traffic immediately began routing. Ubiquiti's docs do not describe this behavior; do not trust this without re-testing if the zone model ever changes.
 
 **Pending cleanup:** swap both remote-gateway fields from hard-coded IPs to the DDNS names now that the tunnel is stable.
 
@@ -216,3 +224,6 @@ Two things blocked the tunnel initially:
 - **Cutover completed 2026-04-09** (Comcast → bridged → UDM Pro WAN). Devices kept their IPs — no reconfiguration was needed — so any doc older than that date may still describe the legacy router topology.
 - **Use the `unifi-church` MCP** for verification. The firewall policy list alone is ~140 KB of JSON; request specific actions/filters rather than full dumps.
 - **No subnet overlap with home** (home uses `192.168.0/2/3.0/24`, church uses `192.168.1/10/20/30/40/50.0/24` + `10.1.10.0/24`) — safe to route across the tunnel without NAT.
+- **IPsec tunnel local subnets are auto-derived from zone membership, not a UI field.** See the VPN section above. Adding a new VLAN to the `Internal` zone implicitly makes it routable over the site-to-site tunnel. Conversely, moving a VLAN out of `Internal` will silently remove it from tunnel reachability.
+- **Isolated zones (IOT, Guest, Protect, Access, Talk) are deliberately not bridged across the tunnel.** From home, manage devices on those VLANs via the UniFi controller web UI / MCPs at `192.168.1.1`, which aggregates them. Direct network access to isolated devices is via the Pastor2023 jump-box pattern (VLAN 1 has Allow All to every user zone).
+- **Remote access is RustDesk Direct IP**, not the public rendezvous server. See `references/remote-access.md` for the per-machine setup and the Windows Firewall / NetworkCategory gotchas.
