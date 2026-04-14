@@ -1,4 +1,4 @@
-.claude/
+.claude/settings.local.json
 .mcp.json
 
 # Symlinks in references/ (created by git-sync) — ignore everything

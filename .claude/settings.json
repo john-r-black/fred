@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "files=$(ls john/n_*.md 2>/dev/null); if [ -n \"$files\" ]; then printf '%s' \"$files\" | jq -R -s '{hookSpecificOutput: {hookEventName: \"SessionStart\", additionalContext: (\"Priority notes in john/ — read these and surface actionable items in your first response:\\n\" + .)}}'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
