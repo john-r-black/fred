@@ -56,30 +56,33 @@ Any prose format is acceptable as long as every required field is present.
 
 ## Execution overview
 
-**Order of operations per Sunday**:
+**Order of operations**:
 
 ```
+Pre-step (Services): create series + upload artwork   ← runs ONCE per series
+      │
+      ▼
 Step 1 (Services)  ─┬─→  Step 3 (Publishing)
 Step 2 (YouTube)   ─┘        ↑
                              needs video_id from step 2
                              needs plan_id from step 1
 ```
 
-Steps 1 and 2 are independent — run in parallel where possible. Step 3 depends on both.
+The pre-step must complete before *any* Step 1 or Step 3 work starts — `update_plan` needs `services_series_id` to link the plan, and `create_episode_from_services` needs the series art already in place or Publishing inherits a placeholder. Once the pre-step is done, Steps 1 and 2 are independent per week and can run in parallel; Step 3 depends on both.
 
 **Data that passes between steps**:
 
 | Value | Produced by | Consumed by |
 |---|---|---|
-| `plan_id` (Services) | Step 1.1 `list_plans` | Step 1.2-1.5, Step 3.1 |
+| `services_series_id` | Pre-step `create_series` | Pre-step `upload_series_artwork`, Step 1.2 `update_plan` |
+| `plan_id` (Services) | Step 1.1 `list_plans` | Step 1.2-1.4, Step 3.1 |
 | `sermon_item_id` | Step 1.3 `list_items` | Step 1.4 `update_item` |
-| `services_series_id` | Step 1.5 `create_series` (first week only) | Step 1.5 `upload_series_artwork` |
 | `video_id` (YouTube) | Step 2.1 `create_livestream` | Steps 2.2-2.5, Step 3.2, Step 3.3 |
 | `episode_id` (Publishing) | Step 3.1 `create_episode_from_services` | Steps 3.2-3.5 |
 | `publishing_series_id` | Step 3.1 (or Step 3.1.fix) | Step 3.4 (art check) |
 | `episode_time_id` | Step 3.3 `list_episode_times` | Step 3.3 `update_episode_time` |
 
-**Multi-week handling**: when John provides a whole series, loop over the weeks and run steps 1-3 for each. Services series creation (step 1.5) runs **once for the whole series on the first week**; skip it on subsequent weeks — setting `series_title` on the plan auto-links to the existing series by title match.
+**Multi-week handling**: when John provides a whole series, run the pre-step once, then loop Steps 1–3 per week. The per-week steps are uniform — no "first week only" conditional. Every week passes the same `services_series_id` into `update_plan`.
 
 **Error handling rule**: if any step fails, **stop and report to John immediately**. Don't try to patch partial state yourself. John would rather know at step 2 than find a half-broken episode on Sunday morning.
 
@@ -114,23 +117,28 @@ For the `<series_slug>` and `<scripture_slug>` placeholders in hashtags:
 
 ---
 
-## Step 1 — PCO Services
+## Pre-step — Services series creation
+
+Runs **once per series** before any per-week work. For a standalone week, still run it — treat the message as a one-week series.
+
+1. **Create the series**. `create_series` with `title: "<series name>"`. Save the returned ID as `services_series_id`.
+2. **Upload artwork**. `upload_series_artwork` with `series_id: services_series_id` + `file_path` (absolute path John provided). The MCP uploads to PCO's file service and attaches it.
+
+Both must complete before Step 1.2 runs for any week. `update_plan` needs `services_series_id` to link the plan (title-based auto-match does NOT work on update — you must pass the ID explicitly), and `create_episode_from_services` in Step 3.1 needs the Services series art already in place or the Publishing episode inherits a placeholder that's hard to fix after the fact.
+
+## Step 1 — PCO Services (per week)
 
 1. **Find the plan**. `list_plans` with `service_type_id: "1028241"`, `filter: "future"`, `order: "sort_date"`. Iterate the results and pick the plan whose `dates` field matches the target Sunday (e.g. `"April 19, 2026"`). If no plan matches, stop and ask John — do NOT `create_plan`.
 2. **Update plan metadata**. `update_plan` with:
    ```json
-   {"attributes": {"title": "<message title>", "series_title": "<series name>", "public": true}}
+   {"attributes": {"title": "<message title>", "series_title": "<series name>", "series_id": "<services_series_id>", "public": true}}
    ```
+   `series_id` is **required** — passing only `series_title` will leave the plan unlinked from the series and its artwork.
 3. **Find the Sermon item**. `list_items` and pick the item where `title == "Sermon"` and `item_type == "item"`. Save `sermon_item_id`. Do NOT rely on sequence number — item order may vary.
 4. **Set the scripture**. `update_item` with:
    ```json
    {"attributes": {"description": "<scripture ref>"}}
    ```
-5. **Services series creation** (first week of a new series / standalone weeks only — skip for subsequent weeks):
-   1. `create_series` with `title: "<series name>"`. Save the returned series ID.
-   2. `upload_series_artwork` with `series_id` + `file_path` (the absolute path John provided). The MCP uploads to PCO's file service and attaches it.
-
-   Both sub-steps must complete **before** Step 3.1 runs. If the Services series has no art when `create_episode_from_services` imports it, the Publishing series will inherit a placeholder — hard to fix after the fact.
 
 ## Step 2 — YouTube broadcast
 
@@ -166,16 +174,18 @@ John will manually verify "Altered content = No" and "Location = Deer Park Unite
 }
 ```
 
-This auto-creates the Publishing episode, attaches (or reuses) the matching Publishing series, copies Services series art into a first-time Publishing series, and establishes the Services↔Publishing bidirectional link.
+This auto-creates the Publishing episode, attaches (or creates) a matching Publishing series with the same title as the Services series, inherits the Services series art **onto the Publishing series** (not the episode — see Check B), and establishes the Services↔Publishing bidirectional link.
 
-**Race condition handling**: the action returns a `warning: "linked_publishing_episode_id not found on plan"` about 30% of the time — the job completes but the plan read is too fast. If you see this warning, wait 2 seconds and call `get_plan` on the Services plan; `linked_publishing_episode_id` will be there. Retry up to 3 times, 2 seconds apart. If still missing after 3 retries, stop and report.
+**Race condition handling**: the action returns a `warning: "linked_publishing_episode_id not found on plan"` roughly every time under fast/parallel execution. The job completes but the plan read is too fast. When you see this warning, call `get_plan` on the Services plan to retrieve `linked_publishing_episode_id`. In practice one follow-up read is enough; if still missing, retry up to 3 times 2 seconds apart, then stop and report.
 
-**Required post-creation checks** (don't skip these — both are known-buggy):
+**Ghost Publishing series gotcha**: if a prior failed run or manual cleanup left a stale Publishing series with the same title (even empty), `create_episode_from_services` will NOT reuse it — it creates a new series and appends `(1)` to the title. If you see `"Live Like This (1)"` (or similar) on the Publishing series of the first week's episode, there's a duplicate upstream. Report this to John and offer to delete the stale one and rename the new one back. Weeks 2-N of the same run will correctly match the `(n)`-suffixed series once it exists.
 
-- **Check A: series_id populated.** `get_episode` on the new episode. If `series_id` is null, the import failed to link the Publishing series. Fix: `list_series` (Publishing) and find the entry whose `title` matches the series name. `update_episode` with `{"attributes": {"series_id": "<id>"}}`.
-- **Check B: art is not a placeholder.** On the same `get_episode` result, look at `art.attributes.source`. If it equals `"default"` (or the `name` ends in `-large.png`), the episode has the PCO default placeholder. Fix via one of:
-  - **A (cheap)**: `get_series` on the Publishing series → read `art.attributes.signed_identifier` → `update_episode` with `{"attributes": {"art": "<that string>"}}` (bare string, not an object).
-  - **B (fresh upload)**: `upload_episode_art` with `episode_id` + `file_path`. Use this when the Publishing series itself also has no art.
+**Required post-creation checks**:
+
+- **Check A: series_id populated.** `get_episode` on the new episode (pass `include: "series"`). The `series_id` attribute should be non-null. Post-reorder (pre-step runs before Step 3.1), this almost always passes on the first try. If it's null, the import failed to create/link the Publishing series — stop and report to John. Do NOT try to fix via `list_series`: that endpoint returns every series in the org as one giant response that will overflow the tool result; and title-matching is unreliable due to the ghost-series gotcha above.
+- **Check B: art is not a placeholder.** (Expected to fire — the episode-level art inheritance is known-broken.) On the same `get_episode` result, look at `art.attributes.source`. If it equals `"default"` (or `name` ends in `-large.png`), fix it as follows:
+  - **Preferred (cheap)**: `get_series` on the Publishing series returned by Check A → read `art.attributes.signed_identifier` (a long base64-ish string) → `update_episode` with `{"attributes": {"art": "<that string>"}}`. Note: `art` is set as a bare string, NOT an object. This reuses the artwork already attached to the Publishing series — no re-upload, no cache.
+  - **Fallback (fresh upload)**: `upload_episode_art` with `episode_id` + `file_path`. Use this only when the Publishing series itself also has no art — in the current flow that shouldn't happen because the pre-step uploads to Services and the Services→Publishing series inheritance does work.
 
 ### 3.2. Populate remaining episode fields
 
@@ -254,9 +264,12 @@ Give to support DPUMC (https://dpumc.churchcenter.com/giving)
 
 ## Known limitations
 
-As of 2026-04-13 the MCP closes every gap except two rare cases:
+As of 2026-04-14 the MCP closes every gap except these cases:
 
 1. **New guest speakers**: PCO has no `create_speaker` API. When a brand-new guest preaches for the first time ever, John must add them to PCO Publishing → Speakers in the web UI first. Subsequent sermons by the same guest are fully automated.
 2. **YouTube Studio per-broadcast settings**: the `update_video` MCP action doesn't expose `madeForKids` ("Altered content") or `recordingDetails.location`. Both typically inherit from channel defaults once set — verify once, then forget.
+3. **Publishing episode art inheritance**: `create_episode_from_services` puts the Services series art on the Publishing *series* but leaves the *episode* with a default placeholder. Always patch via Check B. See 3.1.
+4. **`list_series` (Publishing) response size**: returns every series in the org in one response and overflows the MCP result budget. Don't use it for title-based lookup; get the `publishing_series_id` from the episode via `get_episode` with `include: "series"`.
+5. **`create_series` (Publishing) is not usable from the MCP**: validation rejects every variant of `channel_id`/`channel` in attributes. There is no documented way to create a Publishing series directly via this MCP — which is fine, because `create_episode_from_services` creates the Publishing series as a side effect of the first episode import.
 
 Full API-gap history and MCP bug workarounds: `mcp_issues/pco_mcp_issues/2026-04-11_mcp-pco-issues.md`.
