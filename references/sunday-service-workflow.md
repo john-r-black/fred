@@ -21,11 +21,12 @@ End-to-end process for setting up a Sunday worship service across PCO Services, 
 | **Message title** | yes | Plan title in Services, episode title in Publishing. |
 | **Scripture reference** | yes | e.g. `Luke 24:13-35`. Goes on the Sermon plan item as its description. |
 | **2-3 sentence synopsis** | yes | Raw material for the YouTube/Publishing description. Rewrite into a blurb — never paste the synopsis verbatim. |
-| **Preacher** | if not John | Default is John Black (`92412499`). Otherwise John will name the person; look them up via `list_speakers`. |
+| **Preacher** | no | **Defaults to John R. Black (`92412499`) when not specified.** Only required if someone else is preaching; in that case John will name the person and you look them up via `list_speakers`. |
 | **Series artwork** | yes | Absolute file path to a 16x9 image on John's disk (typically under `D:\OneDrive - DPUMC - John\...`). One file feeds Services series art, Publishing series art, and the YouTube thumbnail. |
 
 **Communion is not an input.** First Sunday of each month = communion, every other Sunday = no communion. More importantly, the plans are already correctly templated when batch-created at the start of the year — communion Sundays already have the "Celebration of Holy Communion" item in place, non-communion Sundays have "Invitation to Discipleship". Don't rename or edit these items; the templates are authoritative.
-| **Message-specific hashtags** | optional | Extra tags beyond the always-included `dpumc <series_slug> <scripture_slug>`. |
+
+**Hashtags are not an input.** The tag set is fixed at `#dpumc #<series_slug> #<scripture_slug>` — three tags, no more. Don't invent message-specific tags and don't ask John for them.
 
 **Before running the workflow**: verify every required field is present. If anything is missing, ask John. Don't run partial and try to patch later — back out and ask.
 
@@ -41,7 +42,6 @@ Week 1 — 2026-04-19
   Title: And He Walks with Me
   Scripture: Luke 24:13-35
   Preacher: Joel Coulter
-  Communion: no
   Synopsis: Two disciples walking to Emmaus unexpectedly encounter
     the risen Christ. They don't recognize him until he breaks bread.
     The message is about finding Jesus when we walk the road alongside others.
@@ -144,7 +144,7 @@ Write the description blurb first (see § Description Template below). You'll re
 
    Save the returned `id` as `video_id`.
 2. **Bind to the DPUMC stream**. `bind_broadcast` with `broadcastId: video_id`, `streamId: "fo6OsNXk9Io8b6B_YNVPBg1650172008984074"`.
-3. **Set category + tags**. `update_video` with `videoId: video_id`, `categoryId: "29"`, `tags: ["dpumc", "<series_slug>", "<scripture_slug>", ...message tags]`.
+3. **Set category + tags**. `update_video` with `videoId: video_id`, `categoryId: "29"`, `tags: ["dpumc", "<series_slug>", "<scripture_slug>"]`.
 4. **Set thumbnail**. `set_thumbnail` with `videoId: video_id`, `filePath: <artwork file path>`.
 5. **Add to playlist**. `add_to_playlist` with `playlistId: "PLg0k5q7bY9EFqmZezemOhcNehUHtc_NIl"`, `videoId: video_id`. Do NOT pass `position` — playlist is auto-sorted.
 
@@ -239,7 +239,7 @@ inviting, not templated or formulaic>
 <preacher name>
 dpumc.org
 
-#dpumc #<series_slug> #<scripture_slug> [+ message tags]
+#dpumc #<series_slug> #<scripture_slug>
 
 Don't forget to check-in (https://dpumc.churchcenter.com/check-ins)
 Share your prayer requests (https://dpumc.churchcenter.com/people/forms/270725)
