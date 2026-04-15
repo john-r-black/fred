@@ -6,9 +6,3 @@
 references/*
 !references/*.md
 !references/.gitkeep
-
-# Same pattern for mcp_issues/ — symlinks to sibling mcp-* repos are
-# per-machine, but shared .md notes should be tracked.
-mcp_issues/*
-!mcp_issues/*.md
-!mcp_issues/.gitkeep

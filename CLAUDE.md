@@ -23,9 +23,19 @@ tools. Other repos under `~/code_projects/` are project-specific builders;
 
 - `references/` — long-form docs Claude reads on demand. Stable, versioned.
 - `john/` — John's scratch notes. See convention below.
-- `mcp_issues/` — symlinks to sibling `mcp-*` repos' issue folders. Machine-
-  local, gitignored.
 - `CLAUDE.md` — this file. Keep it short; it loads on every session.
+
+## Logging MCP bugs
+
+When you find a bug in one of John's `mcp-*` repos while working from fred,
+file it as a GitHub issue, not a local file:
+
+    gh issue create --repo john-r-black/mcp-<name> --title "..." --body "..."
+
+MCP development happens on the Ubuntu box only; Windows is consumer-only and
+does not have the `mcp-*` repos cloned. Each `mcp-*` repo's CLAUDE.md runs
+`gh issue list` at session start, so issues surface automatically next time
+John opens that repo.
 
 ## First thing every new session
 
