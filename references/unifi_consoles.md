@@ -69,6 +69,17 @@ db.user.updateOne({site_id:s, mac:"aa:bb:cc:dd:ee:ff"}, {$set:{name:"New Name"}}
 mongodump --port 27117 -d ace -o /tmp/ace-backup-$(date +%F)
 ```
 
+## Managed device SSH (switches, APs, UAH hubs)
+
+Separate from console SSH. Adopted devices inherit SSH credentials from the Network controller's **Device SSH Authentication** (Network app → Devices → gear icon top-right → SSH section). Settings push to every adopted device on the site.
+
+- Church site (`192.168.1.0/24`): username `dpumc`, `~/.ssh/unifi_ed25519` pubkey authorized. BusyBox shell on login.
+- Home site (`192.168.0.0/24`): username `1421`, same `~/.ssh/unifi_ed25519` pubkey authorized.
+- Example (church): `ssh -i ~/.ssh/unifi_ed25519 dpumc@192.168.1.8` (FLC Pro-24-PoE).
+- Example (home): `ssh -i ~/.ssh/unifi_ed25519 1421@192.168.0.190`.
+- Useful for: PoE port cycling (`swctrl poe`), port counters (`swctrl port show`), interface stats (`ifconfig`, `cat /proc/net/dev`), inform host (`cat /etc/persistent/cfg/mgmt`).
+- Access readers (G3-Flex, UA-Lite, UDA) have no direct SSH — managed through their UAH hub only.
+
 ## Protect MCP — what it CAN do
 
 On `unifi-church-nvr`, the Protect MCP *does* support renaming:
