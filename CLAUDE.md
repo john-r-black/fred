@@ -18,6 +18,11 @@ tools. Other repos under `~/code_projects/` are project-specific builders;
   otherwise leave them alone.
 - Lean on MCPs first, scripts second. Most tasks here are operational
   (calendar, church admin, network, giving, video), not code.
+- John doesn't always know what standard tools exist. When he describes a
+  workflow or shows you a custom script, flag any part of it that's now
+  covered natively by `gh`, `git`, Claude Code features, MCP capabilities,
+  or other common tooling — even if he didn't ask. He built workarounds
+  from ignorance and wants them surfaced as he encounters them.
 
 ## Repo layout
 
