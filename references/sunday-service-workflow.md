@@ -272,4 +272,4 @@ As of 2026-04-14 the MCP closes every gap except these cases:
 4. **`list_series` (Publishing) response size**: returns every series in the org in one response and overflows the MCP result budget. Don't use it for title-based lookup; get the `publishing_series_id` from the episode via `get_episode` with `include: "series"`.
 5. **`create_series` (Publishing) is not usable from the MCP**: validation rejects every variant of `channel_id`/`channel` in attributes. There is no documented way to create a Publishing series directly via this MCP — which is fine, because `create_episode_from_services` creates the Publishing series as a side effect of the first episode import.
 
-Full API-gap history and MCP bug workarounds: `mcp_issues/pco_mcp_issues/2026-04-11_mcp-pco-issues.md`.
+Full API-gap history and MCP bug workarounds: `gh issue list --repo john-r-black/mcp-pco`.
