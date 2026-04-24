@@ -1,4 +1,9 @@
 {
+  "permissions": {
+    "allow": [
+      "mcp__ProPresenter__*"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {
