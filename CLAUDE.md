@@ -2,7 +2,7 @@
 
 This repo is John's "get stuff done" working directory, not a software project.
 It has the broadest MCP access of any of his repos — multiple Google accounts,
-multiple PCO orgs, all UniFi consoles, plus Canva, YouTube, and context7 — so
+multiple PCO orgs, all UniFi consoles, plus Canva and YouTube — so
 that any question John asks from here can be answered with the best available
 tools. Other repos under `~/code_projects/` are project-specific builders;
 `fred` is where their output gets *used*.
