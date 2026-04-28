@@ -1,6 +1,6 @@
 # Black Home Network
 
-_Last verified against live UniFi controller: 2026-04-11_
+_Last verified against live UniFi controller: 2026-04-27 (Pi swap to 8GB; production wired on UDM Pro port 3 → VLAN 3; old 2GB Pi repurposed as `1421acpc`)_
 
 ## TL;DR for a new AI
 
@@ -9,7 +9,7 @@ _Last verified against live UniFi controller: 2026-04-11_
 - **Minimal UniFi hardware:** UDM Pro, one USW Lite 8 PoE, and two APs (U6-LR in the living room, Nano HD in the bedroom).
 - **Lots of consumer IoT.** ~60 of the ~69 active clients are Alexa/Echo, smart bulbs, fans, switches, the Petkit feeder, Ring doorbell, roborock vacuum, etc. They live on the default VLAN.
 - **IPsec site-to-site tunnel to the church UDM Pro is UP** (migrated to zone-based firewall 2026-04-09 to make it work).
-- **Pi MCP server** lives on VLAN 3 at `192.168.3.10` (see `pi-infrastructure.md`).
+- **Two Pis** on VLAN 3: production MCP server (`1421mcp`) at `192.168.3.7` (UDM Pro port 3, eth0); ACPC controller (`1421acpc`) at `192.168.3.10` (UDM Pro port 2, temporary — moves to church). See `pi-infrastructure.md`.
 - **MCP access:** `unifi-home` MCP server exposes the same tool surface as the church controller.
 
 ## Access & credentials
@@ -47,7 +47,7 @@ All three VLANs share the single `Internal` firewall zone, so the zone-based pol
 - `192.168.2.0/24 → Hotspot zone`: BLOCK
 - `192.168.2.0/24 → Dmz zone`: BLOCK
 
-The result: devices on the `Black` VLAN can reach the internet but cannot initiate traffic to anything else on the LAN. VLAN 1 and VLAN 3 do *not* have these block rules, so they can route to each other — the Pi on `192.168.3.10` is reachable from the main network.
+The result: devices on the `Black` VLAN can reach the internet but cannot initiate traffic to anything else on the LAN. VLAN 1 and VLAN 3 do *not* have these block rules, so they can route to each other — the production Pi at `192.168.3.7` and the ACPC Pi at `192.168.3.10` are reachable from the main network.
 
 **Implication for a new AI:** don't assume "different VLAN = different zone = isolated." Here, only VLAN 2 is isolated, and it's done via source-filter rules rather than zones.
 
@@ -62,7 +62,7 @@ The result: devices on the `Black` VLAN can reach the internet but cannot initia
 - **Alexa ecosystem:** Echo, Echo Dot, Echo Show, Echo Plus in kitchen, living room, dining room, office, bedrooms, garage, attic (10+ units).
 - **Smart lighting/switches:** 25+ Inovelli / Kasa / Feit / Sengled / ESP-based switches — every room.
 - **Appliances / other IoT:** dishwasher, disposal, thermostat, garage door opener, roborock vacuum, Petkit feeder, Govee Lyra, Aura frame, LG webOS TV, Insignia TV, stereo speakers.
-- **Work / infrastructure:** `1421home` (wired, 192.168.0.213), `1421mcp` Pi (wired, **192.168.3.10**).
+- **Work / infrastructure:** `1421home` (wired, 192.168.0.213), `1421mcp` production Pi (wired UDM Pro port 3, **192.168.3.7**), `1421acpc` Pi (wired UDM Pro port 2, **192.168.3.10**, en route to church).
 
 ---
 
@@ -99,9 +99,10 @@ The zone structure is minimal — the controller only creates the system zones:
 
 ```
 Dream Machine Pro (UDM Pro) — 99.122.140.237 / 192.168.0.1
-├─ USW Lite 8 PoE       (192.168.0.190)  — wired closet
-│   ├── 1421home        (192.168.0.213, wired)
-│   └── 1421mcp (Pi)    (192.168.3.10, wired, tagged VLAN 3)
+├─ Port 2 → 1421acpc (Pi) (192.168.3.10, native VLAN 3) — temporary, moves to church
+├─ Port 3 → 1421mcp (Pi)  (192.168.3.7,  native VLAN 3) — production MCP server
+├─ USW Lite 8 PoE         (192.168.0.190)  — wired closet
+│   └── 1421home          (192.168.0.213, wired)
 ├─ Living Room AP — U6-LR (192.168.0.71)   — main coverage, 2.4 + 5 + 6 GHz capable
 └─ Bedroom AP - Nano HD   (192.168.0.154)  — secondary, rear of house
 ```
@@ -145,7 +146,7 @@ Policy-based IPsec, status **UP** as of 2026-04-09. Subnet selectors expanded 20
 
 ## Related docs in this repo
 
-- `pi-infrastructure.md` — the VLAN 3 Pi (192.168.3.10) that hosts the MCP server
+- `pi-infrastructure.md` — the two VLAN 3 Pis (production `1421mcp` at .7, ACPC `1421acpc` at .10)
 - `2026-04-11_network_church.md` — mirror document for the church side
 - `vlan-migration-plan.md` — church-side VLAN migration (not relevant here)
 
@@ -154,7 +155,7 @@ Policy-based IPsec, status **UP** as of 2026-04-09. Subnet selectors expanded 20
 ## Things a new AI should know before making changes
 
 - **VLAN 2 isolation is source-IP-rule-based, not zone-based.** If you change firewall policies, be sure the three `Isolated Networks` BLOCK rules for `192.168.2.0/24` stay in place.
-- **VLAN 1 and VLAN 3 are not isolated from each other.** Anything on `192.168.0/24` can reach the Pi at `192.168.3.10` and vice versa. That's intentional.
+- **VLAN 1 and VLAN 3 are not isolated from each other.** Anything on `192.168.0/24` can reach the Pis at `192.168.3.7` (production MCP) and `192.168.3.10` (ACPC) and vice versa. That's intentional.
 - **Most "weird" clients are smart-home devices.** Don't be alarmed by 40+ ESP-based lights / switches / hubs with cryptic MAC-suffix names — they're Inovelli / Kasa / generic ESP8266 lighting, all on VLAN 1.
 - **Only 2 APs cover the house.** If WiFi troubleshooting comes up, roaming between Living Room and Bedroom APs is the whole story.
 - **Church tunnel relies on this side's config.** Disabling zone-based firewall or turning IDS/IPS back on will silently break remote access from the church.

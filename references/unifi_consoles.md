@@ -64,6 +64,8 @@ db.user.updateOne({site_id:s, mac:"aa:bb:cc:dd:ee:ff"}, {$set:{name:"New Name"}}
 
 **Gotcha:** the Integration API does NOT mirror `user.name` reliably — for UniFi console clients it returns the `hostname`/`direct_connect_domain` cloud string instead, even when a proper alias is set. Dump from mongo, don't trust the MCP, when you need authoritative names.
 
+**Gotcha (port profiles / UDM Pro `port_overrides`):** direct mongo writes to `device.port_overrides` do **not** propagate to the switch ASIC. The Network controller's config-emit pipeline (which writes `/data/udapi-config/udapi-net-cfg-<id>.json`) is only triggered by REST API mutations — restarting `unifi.service`, `udapi-server`, `udapi-bridge`, calling `ubios-udapi-client INTERNAL /internal/sync/cmd "sync_all"`, or `mca-ctrl -t req-inform` will all NOT cause the file to be regenerated. The on-disk config is what the gateway actually applies. So for port profile changes (native VLAN, tagged VLANs, port isolation, PoE mode), use the UniFi UI or the authenticated controller REST API at `https://<console>:443/proxy/network/api/s/default/...` — not direct mongo. Same architectural lesson as DHCP reservations: only fields the controller treats as cosmetic (e.g. `user.name`, `device.name`) survive a direct-mongo edit.
+
 **Before bulk writes**, take a quick backup:
 ```
 mongodump --port 27117 -d ace -o /tmp/ace-backup-$(date +%F)
