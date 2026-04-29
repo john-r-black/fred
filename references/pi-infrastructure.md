@@ -82,10 +82,11 @@ Production Pi runs `cloudflared.service` as the tunnel endpoint. All ingress tar
 | Config | `/etc/cloudflared/config.yml` (also `/home/1421MCP/.cloudflared/config.yml`) |
 | Credentials | `/home/1421MCP/.cloudflared/126b203e-fcf3-43cd-90b4-98df790ad2f6.json` |
 
-### Live ingress (10 hostnames)
+### Live ingress (11 hostnames)
 
 | Hostname | Local port | Service |
 |---|---|---|
+| `app.1421mcps.com` | 8088 | nginx static — OAuth consent screen homepage + privacy policy (public, no Access) |
 | `mcp.1421mcps.com` | 8080 | (placeholder — no current listener) |
 | `unifi-home.1421mcps.com` | 8081 | unifi-mcp-home |
 | `unifi-church.1421mcps.com` | 8082 | unifi-mcp-church |
